@@ -1,0 +1,27 @@
+.h1 {
+  text-align: center;
+}
+
+
+.signupin-button-container {
+  display: flex;
+  justify-content: space-around;
+  padding: 10px;
+}
+
+
+.signupin-button {
+  background-color:#dfbdfa;
+  border-radius: 6px;
+  border: 1px solid #c584f3;
+  cursor: pointer;
+  color: #523a63;
+  font-size: 15px;
+  font-weight: bold;
+  padding: 6px 24px;
+  text-decoration: none;
+}
+
+.signupin-button:hover {
+  background-color:#bc80ea;
+}

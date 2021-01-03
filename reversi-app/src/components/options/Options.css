@@ -1,0 +1,10 @@
+.text-color {
+    color: white;
+}
+
+.options-button {
+    margin-top: 20px;
+    width: 250px;
+    border-radius: 7px;
+    background-color: lightgrey;
+  }

@@ -1,0 +1,96 @@
+.reversi-container {
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+}
+
+.name-container {
+    display: flex;
+    flex-flow: column wrap;
+    align-items: center;
+    justify-content: center;
+    margin-top: 50px;
+    box-shadow: 10px 10px 5px grey;
+    background-color: red;
+    height: 100px;
+    width: 200px;
+    border-radius: 7px;
+    margin-right: 100px;
+}
+
+.board-container {
+    display: flex;
+    flex-flow: column wrap;
+    align-items: center;
+    justify-content: center;
+    margin-top: 50px;
+    box-shadow: 10px 10px 5px grey;
+    background-color: red;
+    height: 650px;
+    width: 650px;
+    border-radius: 7px;
+}
+
+.stoneswon-container {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 10px 10px 5px grey;
+    background-color: red;
+    height: 100px;
+    width: 200px;
+    border-radius: 7px;
+    margin-left: 100px;
+}
+
+.header {
+    margin-bottom: 0px;
+    margin-top: 0px;    
+}
+
+.name-turn-text {
+  margin-left: 100px;
+}
+
+.text {
+    align-self: center;
+    margin-bottom: 0px;
+    margin-top: 0px; 
+}
+
+.board {
+  width: 550px;
+}
+
+.board-row {
+  margin-left: 35px;
+}
+
+.square {
+  width: 60px;
+  height: 60px;
+  margin-top: 1px;
+  margin-bottom: 1px;
+  margin-right: 1px;
+  background-color: green;
+  color: black;
+  border: 1px solid black;
+  border-radius: 6px;
+}
+
+.square:hover {
+  background-color: rgb(57, 134, 57);
+  cursor: pointer;
+}
+
+.stone {
+  height: 30px;
+  width: 30px;
+}
+
+.reversi-button {
+  margin-top: 30px;
+  border-radius: 7px;
+  background-color: lightgrey;
+}
