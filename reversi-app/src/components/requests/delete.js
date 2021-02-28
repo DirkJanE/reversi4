@@ -15,12 +15,10 @@ export const deleteImage = (id, setSecondResult, setError) => {
         console.log(req.status);
         req.onreadystatechange = function() {
 
-            if (req.readyState === 4){   //if complete
+            if (req.readyState === 4){
                 
-                if(req.status === 200){  //check if "OK" (200)
-                    setSecondResult(200);
-                } else {
-                    
+                if(req.status === 200){
+                    setSecondResult(200);                   
                 }
             } 
         }

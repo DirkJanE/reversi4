@@ -5,7 +5,7 @@ import javax.persistence.*;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
-@Table(name = "files")
+@Table(name = "image")
 public class Image {
     @Id
     @GeneratedValue(
@@ -19,23 +19,30 @@ public class Image {
     @Column(name = "imageid")
     private Long imageid;
 
-    @Column(name = "name")
-    private String name;
+    @Column(name = "imagename")
+    private String imagename;
 
-    @Column(name = "type")
-    private String type;
+    @Column(name = "imagetype")
+    private String imagetype;
 
-    @Column(name = "data", length = 1000)
-    private byte[] data;
+    @Column(name = "imagedata", length = 1000)
+    private byte[] imagedata;
+
+    @Column(name = "userid")
+    private Long userid;
+
+    @OneToOne(mappedBy="image", cascade=CascadeType.ALL)
+    private User user;
 
     public Image() {
     }
 
-    public Image(Long imageid, String name, String type, byte[] data) {
+    public Image(Long imageid, String imagename, String imagetype, byte[] imagedata, long userid) {
         this.imageid = imageid;
-        this.name = name;
-        this.type = type;
-        this.data = data;
+        this.imagename = imagename;
+        this.imagetype = imagetype;
+        this.imagedata = imagedata;
+        this.userid = userid;
     }
 
     public Long getId() {
@@ -47,27 +54,36 @@ public class Image {
     }
 
     public String getName() {
-        return name;
+        return imagename;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setName(String imagename) {
+        this.imagename = imagename;
     }
 
     public String getType() {
-        return type;
+        return imagetype;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setType(String imagetype) {
+        this.imagetype = imagetype;
     }
 
     public byte[] getData() {
-        return data;
+        return imagedata;
     }
 
-    public void setData(byte[] data) {
-        this.data = data;
+    public void setData(byte[] imagedata) {
+        this.imagedata = imagedata;
+    }
+
+    public Long getUserId() {
+        return userid;
+    }
+
+    public Long setUserid(long userid) {
+        this.userid = userid;
+        return userid;
     }
 }
 

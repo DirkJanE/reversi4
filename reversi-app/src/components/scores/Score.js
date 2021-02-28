@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { getScore } from '../requests/get';
 import './Score.css';
 
 const Score = () => {
@@ -6,12 +7,12 @@ const Score = () => {
     const [gamesPlayed, setGamesPlayed] = useState();
     const [gamesWon, setGamesWon] = useState();
     const [stonesWon, setStonesWon] = useState();
+    //const [result, setResult] = useState();
+    //const [error, setError] = useState();
 
-  //get scores from localstorage and set them for display on page.
+  //get scores from database and set them for display on page.
   useEffect (() => {
-    setGamesPlayed(localStorage.getItem('gamesPlayed'));
-    setGamesWon(localStorage.getItem('gamesWon'));
-    setStonesWon(localStorage.getItem('stonesWon'));        
+        getScore(setGamesPlayed, setGamesWon, setStonesWon)
     }, [gamesPlayed, gamesWon, stonesWon])
 
 return (

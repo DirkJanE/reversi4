@@ -19,7 +19,7 @@ export const Chat = () => {
       setName(convertname.slice(1, convertname.length - 1));
     }, []);
 
-    //send name to server
+    //receive name from server
     useEffect(() => {    
       socket.on('join', (name) => {
         //console.log(name)

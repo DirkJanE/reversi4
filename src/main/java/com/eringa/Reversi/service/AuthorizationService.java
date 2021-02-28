@@ -2,6 +2,7 @@ package com.eringa.Reversi.service;
 
 import com.eringa.Reversi.domain.ERole;
 import com.eringa.Reversi.domain.Role;
+import com.eringa.Reversi.domain.Score;
 import com.eringa.Reversi.domain.User;
 import com.eringa.Reversi.payload.request.LoginRequest;
 import com.eringa.Reversi.payload.request.SignupRequest;
@@ -9,6 +10,7 @@ import com.eringa.Reversi.payload.response.JwtResponse;
 import com.eringa.Reversi.payload.response.MessageResponse;
 import com.eringa.Reversi.persistence.RoleRepository;
 import com.eringa.Reversi.persistence.UserRepository;
+import com.eringa.Reversi.persistence.ScoreRepository;
 import com.eringa.Reversi.service.Security.jwt.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +37,7 @@ public class AuthorizationService {
     private UserRepository userRepository;
     private PasswordEncoder encoder;
     private RoleRepository roleRepository;
+    private ScoreRepository scoreRepository;
     private AuthenticationManager authenticationManager;
     private JwtUtils jwtUtils;
 
@@ -51,6 +54,11 @@ public class AuthorizationService {
     @Autowired
     public void setRoleRepository(RoleRepository roleRepository) {
         this.roleRepository = roleRepository;
+    }
+
+    @Autowired
+    public void setScoreRepository(ScoreRepository scoreRepository) {
+        this.scoreRepository = scoreRepository;
     }
 
     @Autowired
@@ -75,7 +83,7 @@ public class AuthorizationService {
         if (Boolean.TRUE.equals(userRepository.existsByUsername(signUpRequest.getUsername()))) {
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("This username is already taken! Please choose another"));
+                    .body(new MessageResponse("This username is already taken! Please choose another."));
         }
 
         if (Boolean.TRUE.equals(userRepository.existsByEmail(signUpRequest.getEmail()))) {
@@ -119,8 +127,15 @@ public class AuthorizationService {
             });
         }
 
+        //create the initial scores in the score table.
+        Score initialscore = new Score();
+        initialscore.setGamesPlayed(0);
+        initialscore.setGamesWon(0);
+        initialscore.setStoneswon(0);
+
         user.setRoles(roles);
         userRepository.save(user);
+        scoreRepository.save(initialscore);
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }

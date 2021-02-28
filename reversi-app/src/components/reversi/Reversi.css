@@ -4,18 +4,20 @@
     align-items: center;
 }
 
-.name-container {
-    display: flex;
-    flex-flow: column wrap;
-    align-items: center;
-    justify-content: center;
-    margin-top: 50px;
-    box-shadow: 10px 10px 5px grey;
-    background-color: red;
-    height: 100px;
-    width: 200px;
-    border-radius: 7px;
-    margin-right: 100px;
+.player1-container {
+  display: flex;
+  flex-flow: column wrap;
+  align-items: center;
+  justify-content: center;
+  margin-right: 100px;
+}
+
+.player2-container {
+  display: flex;
+  flex-flow: column wrap;
+  align-items: center;
+  justify-content: center;
+  margin-left: 100px;
 }
 
 .board-container {
@@ -31,7 +33,21 @@
     border-radius: 7px;
 }
 
-.stoneswon-container {
+.firstname-container {
+  display: flex;
+  flex-flow: column wrap;
+  align-items: center;
+  justify-content: center;
+  margin-top: 50px;
+  box-shadow: 10px 10px 5px grey;
+  background-color: red;
+  height: 100px;
+  width: 150px;
+  border-radius: 7px;
+
+}
+
+.secondname-container {
     display: flex;
     flex-flow: column;
     align-items: center;
@@ -39,9 +55,34 @@
     box-shadow: 10px 10px 5px grey;
     background-color: red;
     height: 100px;
-    width: 200px;
+    width: 150px;
     border-radius: 7px;
-    margin-left: 100px;
+}
+
+.avatar1-container {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 10px 10px 5px grey;
+  background-color: red;
+  height: 150px;
+  width: 150px;
+  border-radius: 7px;
+  margin-top: 50px;
+}
+
+.avatar2-container {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 10px 10px 5px grey;
+  background-color: red;
+  height: 150px;
+  width: 150px;
+  border-radius: 7px;
+  margin-top: 50px;
 }
 
 .header {
@@ -90,7 +131,18 @@
 }
 
 .reversi-button {
-  margin-top: 30px;
+  margin-top: 10px;
   border-radius: 7px;
   background-color: lightgrey;
+}
+
+.call-winner {
+  margin-bottom: 10px;
+  color: yellow;
+}
+
+.image {
+  height: 120px;
+  width: 120px;
+  border-radius: 7px;
 }

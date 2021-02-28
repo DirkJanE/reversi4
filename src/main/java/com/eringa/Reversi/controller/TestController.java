@@ -1,11 +1,16 @@
 package com.eringa.Reversi.controller;
 
+import com.eringa.Reversi.domain.User;
+import com.eringa.Reversi.persistence.UserRepository;
 import com.eringa.Reversi.service.TestService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.PostConstruct;
 
 //@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import isEmail from 'validator/lib/isEmail';
 import { IP } from '../url/url';
@@ -8,10 +8,10 @@ import { signupRequest } from '../requests/post';
 export const Signup = () => {
     const { register, handleSubmit, errors } = useForm();
       
-    let isRepeat = true;
-    let result = 0;
-    let error;
-    let isError;
+    const [isRepeat, setIsRepeat] = useState(true);
+    const [result, setResult] = useState();
+    const [error, setError] = useState();
+    const [isError, setIsError] = useState();
 
     //get values from form and send sign up reuest to the database.
     function onSubmit(data) {
@@ -19,14 +19,25 @@ export const Signup = () => {
         let username = data.username;
         let password = data.password;
         let repeat = data.repeat;
-              
+        
         if (password !== repeat) {
-            isRepeat = false;
+            setIsRepeat(false);
 
         } else { 
-            signupRequest(email, username, password, result, isError, error);
-        }    
-    }                    
+            signupRequest(email, username, password, setResult, setError);
+            //console.log(error);
+        } 
+    }          
+
+    useEffect(() => {
+        if (result === 200) {
+            window.location.assign(`http://${IP}:3000`);
+        }
+        if (error === "This username is already taken! Please choose another." || error === "This emailaddress is already in use! Please use it to login.") {
+            setIsError(true)
+        };    
+        //console.log(error)
+    }, [result, error]);
 
     const styles = {
         container: {
@@ -68,7 +79,7 @@ export const Signup = () => {
 
             <div>
                 <p className="message-signup-visible"> {isRepeat ? "" : "The password and the repeated password do not match!"}</p>
-                <p className="message-signup-visible"> { isError ? error : ""}</p>
+                <p className="message-signup-visible"> {isError ? error : ""}</p>
             </div>
             <a className="link"
                        href={`http://${IP}:3000/`}>

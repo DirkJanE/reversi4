@@ -1,7 +1,5 @@
 package com.eringa.Reversi.domain;
 
-import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -30,14 +28,21 @@ public class User {
     @Size(max = 125)
     private String password;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    private Score score;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id", referencedColumnName = "userid")
+    private Image image;
+
     @ManyToMany
     @JoinTable (name = "user_role",
-    joinColumns = @JoinColumn(name = "user_id"),
-    inverseJoinColumns = @JoinColumn(name = "role_id"))
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<com.eringa.Reversi.domain.Role> roles;
 
     public User() {
-
     }
 
     public User(String username, String email, String password) {
@@ -84,5 +89,21 @@ public class User {
 
     public void setRoles(Set<com.eringa.Reversi.domain.Role> roles) {
         this.roles = roles;
+    }
+
+    public Score getScore() {
+        return score;
+    }
+
+    public void setScore(Score score) {
+        this.score = score;
+    }
+
+    public Image getImage() {
+        return image;
+    }
+
+    public void setImage(Image image) {
+        this.image = image;
     }
 }

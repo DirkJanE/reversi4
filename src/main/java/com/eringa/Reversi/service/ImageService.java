@@ -2,7 +2,9 @@ package com.eringa.Reversi.service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Optional;
+import java.util.stream.Stream;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
@@ -22,31 +24,22 @@ public class ImageService {
     @Autowired
     private ImageRepository imageRepository;
 
-    public ResponseEntity.BodyBuilder uploadImage(MultipartFile file) throws IOException {
+    public ResponseEntity.BodyBuilder uploadImage(Long userid, MultipartFile file) throws IOException {
 
         //System.out.println("Original Image Byte Size - " + file.getBytes().length);
         Image image = new Image();
         Image img = new Image(image.getId(), file.getOriginalFilename(), file.getContentType(),
-                compressBytes(file.getBytes()));
+                compressBytes(file.getBytes()), image.setUserid(userid));
         imageRepository.save(img);
         return ResponseEntity.status(HttpStatus.OK);
     }
 
-    public Image getImage(String imageName) {
+    public Image getImage(Long userid) {
 
-        final Optional<Image> retrievedImage = imageRepository.findByName(imageName);
+        final Optional<Image> retrievedImage = imageRepository.findByUserid(userid);
         Image img = new Image(retrievedImage.get().getId(), retrievedImage.get().getName(), retrievedImage.get().getType(),
-                decompressBytes(retrievedImage.get().getData()));
+                decompressBytes(retrievedImage.get().getData()), retrievedImage.get().getUserId());
         return img;
-    }
-
-    public String deleteImage(Long imageid) {
-
-        final Optional<Image> retrievedImage = imageRepository.findById(imageid);
-        Image img = new Image(retrievedImage.get().getId(), retrievedImage.get().getName(), retrievedImage.get().getType(),
-                decompressBytes(retrievedImage.get().getData()));
-        imageRepository.delete(img);
-        return "deleted";
     }
 
     public static byte[] compressBytes(byte[] data) {

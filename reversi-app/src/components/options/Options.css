@@ -8,3 +8,8 @@
     border-radius: 7px;
     background-color: lightgrey;
   }
+
+.options-text {
+    margin-top: 10px;
+    color: white;
+}

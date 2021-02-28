@@ -2,9 +2,12 @@ import axios from 'axios';
 import { IP } from '../url/url';
 
     //request to get scores from database fro scorepage
-    export const getScore = async (setResult, setError) => {
+    export const getScore = async (setGamesPlayed, setGamesWon, setStonesWon) => {
         const id = JSON.parse(localStorage.getItem('id'));
         const token = JSON.parse(localStorage.getItem('token'));
+        let gp;
+        let gw;
+        let sw
     
         axios.get(`http://${IP}:8080/api/score/getscore/${id}`,
         { headers: { "Authorization": `Bearer ${token}` }})
@@ -12,15 +15,18 @@ import { IP } from '../url/url';
                 let result = response.status;
                 //console.log(response)
                 if (result === 200) {
-                    setResult(200);
-                    localStorage.setItem('gamesPlayed', response.data.gamesPlayed);
-                    localStorage.setItem('gamesWon', response.data.gamesWon);
-                    localStorage.setItem('stonesWon', response.data.stoneswon);                  
+                    //setResult(200);
+                    gp = response.data.gamesPlayed;
+                    gw = response.data.gamesWon;
+                    sw = response.data.stoneswon;
+                    setGamesPlayed(gp);
+                    setGamesWon(gw);
+                    setStonesWon(sw)                  
                 }
             })
             .catch(error => {
                 if (error.response) {
-                    setError(error);
+                    //setError(error);
                     //console.log(error.response.data)
                 }
             });
@@ -29,25 +35,17 @@ import { IP } from '../url/url';
 
     //request to get image from database           
     export const getImage = async (setResult, setError) => {
-        const id = JSON.parse(localStorage.getItem('id'));
+        const userid = JSON.parse(localStorage.getItem('id'));
         const token = JSON.parse(localStorage.getItem('token'));
-        const imageid = 'image' + id + '.JPG';
 
-    await axios.get(`http://${IP}:8080/api/image/getimage/${imageid}`,
+    await axios.get(`http://${IP}:8080/api/image/getimage/${userid}`,
     { headers: { "Authorization": `Bearer ${token}` }})
         .then(response => {
             let result = response.status;
             //console.log(response)
             if (result === 200) {
                 setResult(result);
-                /*
-                let convert = URL.createObjectURL(new Blob([response.data]));
-                convert = convert.slice(5);
-                const link = document.createElement('a',);
-                link.href = convert;
-                //console.log(link);
-                setBackgroundUrl(convert);           
-                */
+                //console.log(response.data);
             }
         })
         .catch(err => {
@@ -60,28 +58,27 @@ import { IP } from '../url/url';
         });
     }
 
-    //request to get image from database that is to be deleted
-    export const getImageForDelete = async (setId, setResult, setError) => {
-        const id = JSON.parse(localStorage.getItem('id'));
+    //request to get image for Reversi page
+    export const getImageForReversi = async (userid, setImage, setResult) => {
         const token = JSON.parse(localStorage.getItem('token'));
-        const imageid = 'image' + id + '.JPG';
 
-    axios.get(`http://${IP}:8080/api/image/getimage/${imageid}`,
+    await axios.get(`http://${IP}:8080/api/image/getimage/${userid}`,
     { headers: { "Authorization": `Bearer ${token}` }})
         .then(response => {
             let result = response.status;
-            let id = response.data.id
+            //console.log(response)
             if (result === 200) {
-                //console.log(id)
-                setResult(result);
-                setId(id);
+                setResult(true);
+                let image = response.data;
+                setImage(image.data);
+                //console.log(image.data);
             }
         })
         .catch(err => {
             let error = err.response;
             //console.log(error.data.status);
             if (error) {
-                setError(error.data.status);
+                //setError(error.status);
                 //console.log(error)
             }
         });

@@ -1,7 +1,6 @@
 package com.eringa.Reversi.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 
@@ -11,31 +10,24 @@ import javax.persistence.*;
 public class Score {
 
     @Id
-    @GeneratedValue(
-            strategy= GenerationType.AUTO,
-            generator="native"
-    )
-    @GenericGenerator(
-            name = "native",
-            strategy = "native"
-    )
-    @Column(name = "id", columnDefinition = "serial")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="id")
     private Long id;
     private long gamesplayed;
     private long gameswon;
     private long stoneswon;
-    private Long userId;
 
+    @OneToOne(mappedBy="score", cascade=CascadeType.ALL)
+    private User user;
 
     public Score() {
 
     }
 
-    public Score(long gamesplayed, long gameswon, long stoneswon, Long userId) {
+    public Score(long gamesplayed, long gameswon, long stoneswon) {
         this.gamesplayed = gamesplayed;
         this.gameswon = gameswon;
         this.stoneswon = stoneswon;
-        this.userId = userId;
     }
 
     public Long getId() {
@@ -68,13 +60,5 @@ public class Score {
 
     public void setStoneswon(long stoneswon) {
         this.stoneswon = stoneswon;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
     }
 }

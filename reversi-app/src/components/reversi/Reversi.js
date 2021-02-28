@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useReducer, useRef } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 import Square from "./Square";
 import io from "socket.io-client";
 import axios from 'axios';
 import { IP } from '../url/url';
-import { setScore } from '../requests/put';
 import './Reversi.css';
-
+import { getImageForReversi } from '../requests/get';
+import avatar from '../avatar/Avatar.JPG';
 
 const ENDPOINT = 'http://192.168.1.218:4000';
 let socket = io(ENDPOINT);
@@ -30,15 +30,33 @@ function Reversi () {
     const [darkCount, setDarkCount] = useState(2);
     const [player1Active, setPlayer1Active] = useState({active: null});
     const [player2Active, setPlayer2Active] = useState({active: null});
-    const [player1Name, setPlayer1Name]= useState();
-    const [player2Name, setPlayer2Name] = useState();
-    const [result, setResult] = useState();
-    const [error, setError] = useState();
-    const [counter, setCounter] = useState(0);
-    const [gamesplayed, setGamesPlayed] = useState();
-    const [gameswon, setGamesWon] = useState();
-    const [stoneswon, setStonesWon] = useState();
-    const [scoreid, setScoreid] = useState();
+    const [player1NameForTurn, setPlayer1NameForTurn]= useState();
+    const [player2NameForTurn, setPlayer2NameForTurn] = useState();
+    const [player1NameForScore, setPlayer1NameForScore]= useState();
+    const [player2NameForScore, setPlayer2NameForScore] = useState();
+    const [player1Present, setPlayer1Present]= useState(false);
+    const [player2Present, setPlayer2Present] = useState(false);
+    const [avatar1Result, setAvatar1Result] = useState(false);
+    const [avatar2Result, setAvatar2Result] = useState(false);
+    const [image1, setImage1] = useState();
+    const [image2, setImage2] = useState();
+    
+    const [isWinner, setIsWinner] = useState(false);
+    const [winnerName, setWinnerName] = useState();
+
+    const [lightgamesplayed, setLightGamesPlayed] = useState();
+    const [lightgameswon, setLightGamesWon] = useState();
+    const [lightstoneswon, setLightStonesWon] = useState();
+    const [lightresult, setLightResult] = useState();
+    const [lighterror, setLightError] = useState();
+    const [lightcounter, setLightCounter] = useState(0);
+
+    const [darkgamesplayed, setDarkGamesPlayed] = useState();
+    const [darkgameswon, setDarkGamesWon] = useState();
+    const [darkstoneswon, setDarkStonesWon] = useState();
+    const [darkresult, setDarkResult] = useState();
+    const [darkerror, setDarkError] = useState();
+    const [darkcounter, setDarkCounter] = useState(0);
 
     const player1Token = 'dark';
     const player2Token = 'light';
@@ -396,31 +414,56 @@ function Reversi () {
         });
       },)
 
-      let storeName1 = useRef();
-
-    useEffect(() => {
+      useEffect(() => {
         socket.on("playerNames1", (playerName1) => {
-            storeName1.current = playerName1;
-            setPlayer1Name(...playerName1, playerName1 );
+            let compareName = localStorage.getItem('name');
+            if (compareName === playerName1) {
+                localStorage.setItem('playerToken', 'dark')
+            } 
+            //storeName.current = playerName1;
+            playerName1 = playerName1.slice(1, playerName1.length - 1);
+            setPlayer1NameForTurn(playerName1 + ", it's your turn!");
+            setPlayer1Present(true);
+            setPlayer1NameForScore(playerName1);
             });
-
         },)
+
+        useEffect(() => {
+            socket.on("playerId1", (playerId1) => {
+                //console.log(playerId1);
+                getImageForReversi(playerId1, setImage1, setAvatar1Result)
+                });
+            },)
 
     //console.log(player1Name)
 
     useEffect(() => {
         socket.on("playerNames2", (playerName2) => {
-            storeName1.current = playerName2;
-            setPlayer2Name(...playerName2, playerName2 );
+            let compareName = localStorage.getItem('name');
+            if (compareName === playerName2) {
+                localStorage.setItem('playerToken', 'light')
+            } 
+            playerName2 = playerName2.slice(1, playerName2.length - 1);
+            setPlayer2NameForTurn(playerName2 + ", it's your turn!");
+            setPlayer2Present(true);
+            setPlayer2NameForScore(playerName2);
+            });
+        },)
+
+    useEffect(() => {
+        socket.on("playerId2", (playerId2) => {
+            //console.log(playerId2);
+            getImageForReversi(playerId2, setImage2, setAvatar2Result)
             });
         },)
 
     //console.log(player2Name)
 
-    function socketEmitPlayerData() { 
-        let id = socket.id;
-        let name = localStorage.getItem('name')
-        let playerData = {id, name}
+    function socketEmitPlayerData() {
+        let id = localStorage.getItem('id');
+        let socketid = socket.id;
+        let name = localStorage.getItem('name')      
+        let playerData = {socketid, id, name}
         socket.emit('playerData', playerData)
         }
 
@@ -429,89 +472,183 @@ function Reversi () {
     }
 
     useEffect(() => {
-        function triggerPutRequestToDb(lightCount, darkCount) {    
+        if (lightCount + darkCount === 64)
+            if (darkCount > lightCount) {
+                setIsWinner(true);
+                setWinnerName(player1NameForScore);
+            } else if (darkCount < lightCount) {
+                setIsWinner(true);
+                setWinnerName(player2NameForScore);
+            } else {
+
+            }
+    },[lightCount, darkCount, isWinner, winnerName, player1NameForScore, player2NameForScore])
+
+    useEffect(() => {
+        function uploadDarkScores(lightCount, darkCount) {
+                const token = JSON.parse(localStorage.getItem('token'));    
                 const id = localStorage.getItem('id');
-                const verifyname = localStorage.getItem('name');
-                let updategamesplayed;
-                let updategameswon;
-                let updatestoneswon;
+                const playerToken = localStorage.getItem('playerToken');
+
                 //console.log(counter)
-                
-                if (counter === 0 && lightCount + darkCount === 5) {
-        
-                    //request to get scores from database for Reversi page
+                if (playerToken === 'dark' && darkcounter === 0) {
 
-                    const token = JSON.parse(localStorage.getItem('token'));
-                
-                    axios.get(`http://${IP}:8080/api/score/getscore/${id}`,
-                    { headers: { "Authorization": `Bearer ${token}` }})
-                        .then(response => {
-                                setResult(response.status);
-                                setGamesPlayed(response.data.gamesPlayed);
-                                setGamesWon(response.data.gamesWon);
-                                setStonesWon(response.data.stoneswon);
-                                setScoreid(response.data.id);               
-                        })
-                        .catch(err => {
-                            let error = err.response;
-                            if (error) {
-                                setError(error.status);
-                                //console.log(error.status)
-                            }
-                        });
+                    if (lightCount + darkCount === 5) {
 
-                if (result === 200) {                  
+                        //request to get scores from database for Reversi page
 
-                    if (player1Name === verifyname) {
-                        
-                        updategamesplayed = gamesplayed + 1;
-                        updatestoneswon = stoneswon + darkCount;
-                        if (darkCount > lightCount) {
-                            updategameswon = gameswon + 1;
-                        }
-                        //console.log(updategamesplayed);
-                        setScore(scoreid, updategamesplayed, updategameswon, updatestoneswon);
-                        setCounter(1);   
+                        const token = JSON.parse(localStorage.getItem('token'));
                     
-                    } else {
-                        
-                        updategamesplayed = gamesplayed + 1;
-                        updatestoneswon = stoneswon + lightCount;
-                        if (lightCount > darkCount) {
-                            updategameswon = gameswon + 1;
-                        }
-                        setScore(scoreid, updategamesplayed, updategameswon, updatestoneswon);
-                        setCounter(1); 
+                        axios.get(`http://${IP}:8080/api/score/getscore/${id}`,
+                        { headers: { "Authorization": `Bearer ${token}` }})
+                            .then(response => {
+                                    setDarkResult(response.status);
+                                    setDarkGamesPlayed(response.data.gamesPlayed);
+                                    setDarkGamesWon(response.data.gamesWon);
+                                    setDarkStonesWon(response.data.stoneswon);
+                                    console.log(response);               
+                            })
+                            .catch(err => {
+                                let error = err.response;
+                                if (error) {
+                                    setDarkError(error.status);
+                                    //console.log(error.status);
+                                }
+                            });
                     }
-                }
-                
-                if (error === 500) {                  
 
-                    if (player1Name === verifyname) {
-                        
-                        updategamesplayed = 1;
-                        updatestoneswon = darkCount;
+                    if (darkresult === 200 && lightCount + darkCount === 64) {                
+                 
+                        let updatedarkgamesplayed = darkgamesplayed + 1;
+
+                        let updatedarkstoneswon = darkstoneswon + darkCount;
+
+                        let updatedarkgameswon = 0;
+
                         if (darkCount > lightCount) {
-                            updategameswon = 1;
+                            updatedarkgameswon = darkgameswon + 1;
+
+                        } else {
+                            updatedarkgameswon = darkgameswon + 0;
                         }
-                        setScore(scoreid, updategamesplayed, updategameswon, updatestoneswon);
-                        setCounter(1);   
-                    } else {
-                        
-                        updategamesplayed = 1;
-                        updatestoneswon = lightCount;
-                        if (lightCount > darkCount) {
-                            updategameswon = 1;
-                        }
-                        setScore(scoreid, updategamesplayed, updategameswon, updatestoneswon);
-                        setCounter(1); 
-                        }
+
+                        /*
+                        console.log("darkgamesplayed: " + updatedarkgamesplayed)
+                        console.log("darkgameswon: " + updatedarkgameswon)
+                        console.log("stoneswon + " + updatedarkstoneswon + " darkCount = " + darkCount);
+                        */
+
+                        axios.put(`http://${IP}:8080/api/score/putscore/${id}`,
+                        {
+                            "stoneswon": updatedarkstoneswon,
+                            "gamesPlayed": updatedarkgamesplayed,
+                            "gamesWon": updatedarkgameswon
+                        },
+                        { headers: { "Authorization": `Bearer ${token}` }})
+                            .then(response => {
+                                let result = response.status;
+                                //console.log(response)
+                                if (result === 200) {
+                                    //setResult(result);                  
+                                    //console.log('test')
+                                }
+                            })
+                            .catch(error => {
+                                if (error.response) {
+                                    //setError(error.response)
+                                    console.log(error.response)
+                                }
+                            });
+                        setDarkCounter(1); 
                     }
                 }
             }
-        triggerPutRequestToDb(lightCount, darkCount);
-        },[error, result, counter, darkCount, lightCount, player1Name, gamesplayed, gameswon, stoneswon, player2Name, scoreid])
 
+        uploadDarkScores(lightCount, darkCount);
+        },[darkcounter, darkCount, lightCount, darkresult, darkerror, darkgamesplayed, darkgameswon, darkstoneswon, player1NameForTurn])
+
+        useEffect(() => {
+            function uploadLightScores(lightCount, darkCount) {
+                    const token = JSON.parse(localStorage.getItem('token'));    
+                    const id = localStorage.getItem('id');
+                    const playerToken = localStorage.getItem('playerToken');
+    
+                    //console.log(counter)
+                    if (playerToken === 'light' && lightcounter === 0) {
+    
+                        if (lightCount + darkCount === 5) {
+    
+                            //request to get scores from database for Reversi page
+    
+                            const token = JSON.parse(localStorage.getItem('token'));
+                        
+                            axios.get(`http://${IP}:8080/api/score/getscore/${id}`,
+                            { headers: { "Authorization": `Bearer ${token}` }})
+                                .then(response => {
+                                        setLightResult(response.status);
+                                        setLightGamesPlayed(response.data.gamesPlayed);
+                                        setLightGamesWon(response.data.gamesWon);
+                                        setLightStonesWon(response.data.stoneswon);
+                                        console.log(response);               
+                                })
+                                .catch(err => {
+                                    let error = err.response;
+                                    if (error) {
+                                        setLightError(error.status);
+                                        //console.log(error.status);
+                                    }
+                                });
+                        }
+    
+                        if (lightresult === 200 && lightCount + darkCount === 64) {                
+   
+                            let updatelightgamesplayed = lightgamesplayed + 1;
+    
+                            let updatelightstoneswon = lightstoneswon + lightCount;
+
+                            let updatelightgameswon = 0;
+    
+                            if (lightCount > darkCount) {
+                                updatelightgameswon = lightgameswon + 1;
+
+                            } else {
+                                updatelightgameswon = lightgameswon + 0;
+                            }
+                            
+                            /*
+                            console.log("lightgamesplayed: " + updatelightgamesplayed)
+                            console.log("lightgameswon: " + updatelightgameswon)
+                            console.log("stoneswon: " + updatelightstoneswon + " lightCount = " + lightCount);
+                            */
+
+                            axios.put(`http://${IP}:8080/api/score/putscore/${id}`,
+                            {
+                                "stoneswon": updatelightstoneswon,
+                                "gamesPlayed": updatelightgamesplayed,
+                                "gamesWon": updatelightgameswon
+                            },
+                            { headers: { "Authorization": `Bearer ${token}` }})
+                                .then(response => {
+                                    let result = response.status;
+                                    //console.log(response)
+                                    if (result === 200) {
+                                        //setResult(result);                  
+                                        //console.log('test')
+                                    }
+                                })
+                                .catch(error => {
+                                    if (error.response) {
+                                        //setError(error.response)
+                                        console.log(error.response)
+                                    }
+                                });
+                            setLightCounter(1); 
+                        }
+                    }
+                }
+    
+            uploadLightScores(lightCount, darkCount);
+            },[lightcounter, darkCount, lightCount, lightresult, lighterror, lightgamesplayed, lightgameswon, lightstoneswon])
 
     function renderSquare(key) {
         return (
@@ -551,7 +688,7 @@ function Reversi () {
 
                 flipSquares(key, changedSquares);       
                 
-                socketEmitSquares(changedSquares);
+                socketEmitSquares(changedSquares);               
 
             }}
             value={board[key]}          
@@ -561,15 +698,22 @@ function Reversi () {
 
     return (
         <div className="reversi-container">
-          <div className="name-container">
-            <h4 className="header"> Player 1 </h4>
-            <p className="text"> {player1Name}:{" " + darkCount} </p>
+          <div className="player1-container">
+            <div className="firstname-container">
+                <h4 className="header"> Name player 1: </h4>
+                <p className="text"> {player1Present ? player1NameForScore : "No player"} </p>
+                <h4 className="header"> Score: </h4>
+                <p className="text"> {darkCount} </p>
+            </div>
+            <div className="avatar1-container">
+                {avatar1Result ? <img className="image" src={`data:image/jpeg;base64,${image1}`} alt='' /> : <img className="image" src={avatar} alt='' /> }
+            </div>
           </div>
           <div className="board-container">
            <div className="board">
             <div className="name-turn-text">
               <p className="name-turn-text">
-                {player1Active ? player1Name : player2Name}, it's your turn!
+                {player1Active ? player1NameForTurn : player2NameForTurn}
               </p>
             </div>
             <div className="board-row">
@@ -645,10 +789,20 @@ function Reversi () {
            >
             Click here to start the game!
             </button>
+            <p className="call-winner">
+                {isWinner ? winnerName + " wins! Press F5 for another game." : ""}
+            </p>
         </div>
-        <div className="stoneswon-container">
-            <h4 className="header"> Player 2 </h4>
-            <p className="text"> {player2Name}:{" " + lightCount} </p>
+          <div className="player2-container">
+            <div className="secondname-container">
+                <h4 className="header"> Name player 2: </h4>
+                <p className="text"> {player2Present ? player2NameForScore : "No player"} </p>
+                <h4 className="header"> Score: </h4>
+                <p className="text"> {lightCount} </p>
+            </div>
+            <div className="avatar2-container">
+                {avatar2Result ? <img className="image" src={`data:image/jpeg;base64,${image2}`} alt='' /> : <img className="image" src={avatar} alt='' /> }
+            </div>
           </div>
       </div>
         );

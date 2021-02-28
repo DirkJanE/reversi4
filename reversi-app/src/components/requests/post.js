@@ -2,7 +2,7 @@ import axios from 'axios';
 import { IP } from '../url/url';
 
 //request to store user data in the database
-export const signupRequest = async (email, username, password, result, error, isError) => {
+export const signupRequest = async (email, username, password, setResult, setError) => {
     
     axios.post(`http://${IP}:8080/api/auth/signup`, 
         { email: email,
@@ -13,18 +13,18 @@ export const signupRequest = async (email, username, password, result, error, is
     
     .then(response => {
         //console.log(response.status);
-        result = response.status
+        let result = response.status
         if (result === 200) {
-            //console.log(result)
-            window.location.assign(`http://${IP}:3000/`);
+            //console.log(response)
+            setResult(200);
         }
         //console.log(typeof(result));
     })
-    .catch(err => {
-        if (err.response) {
-            error = err.response.data;
-            isError = true;
-            //console.log(error);
+    .catch(error => {
+        if (error.response) {
+            error = error.response.data;
+            setError(error.message);
+            //console.log(error.message);
             
         }
     });
@@ -62,10 +62,11 @@ export const loginRequest = async (username, password, setResult, setError) => {
     export const postImage = async (formData) => {
         let req = new XMLHttpRequest();
         let token = JSON.parse(localStorage.getItem('token'));
+        let id = JSON.parse(localStorage.getItem('id'));
     
         try {
                 
-            req.open('POST', `http://${IP}:8080/api/image/postimage`, true);
+            req.open('POST', `http://${IP}:8080/api/image/postimage/${id}`, true);
             req.setRequestHeader('Authorization', 'Bearer ' + token);
             req.setRequestHeader('Accept', 'application/json');
             req.send(formData);
@@ -75,8 +76,6 @@ export const loginRequest = async (username, password, setResult, setError) => {
     
             if (err.response.status) {
                 console.log(err)
-    
-    
             }
         }
     }

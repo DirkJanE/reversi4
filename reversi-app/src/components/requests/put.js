@@ -10,9 +10,7 @@ export const setScore = async (id, updategamesplayed, updategameswon, updateston
     {
         "stoneswon": updatestoneswon,
         "gamesPlayed": updategamesplayed,
-        "gamesWon": updategameswon,
-        "userId": id
-
+        "gamesWon": updategameswon
     },
     { headers: { "Authorization": `Bearer ${token}` }})
         .then(response => {
@@ -26,7 +24,7 @@ export const setScore = async (id, updategamesplayed, updategameswon, updateston
         .catch(error => {
             if (error.response) {
                 //setError(error.response)
-                console.log(error)
+                console.log(error.response)
             }
         });
     }
