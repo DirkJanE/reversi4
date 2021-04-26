@@ -3,10 +3,13 @@ import Square from "./Square";
 import io from "socket.io-client";
 import axios from 'axios';
 import { IP } from '../url/url';
-import './Reversi.css';
+import { Box, BoxColumn, Button, Text, Image } from '../style/style.js';
+import {  Board, BoardRow } from './style/style.js';
 import { getImageForReversi } from '../requests/get';
 import avatar from '../avatar/Avatar.JPG';
 
+//import { setToken } from './functions/Settoken.js';
+ 
 const ENDPOINT = 'http://192.168.1.218:4000';
 let socket = io(ENDPOINT);
 
@@ -85,9 +88,11 @@ function Reversi () {
                             {direction: '', squarestoflip: [], validmove: null},
                             {direction: '', squarestoflip: [], validmove: null},
                             {direction: '', squarestoflip: [], validmove: null}]
+    
+    
 
     useEffect(() => {
-        function setActivePlayer() {
+        const setActivePlayer = () => {
             let counter = 0;
             for (let i = 0; i < board.length; i++) {
                 if (board[i] === "green") {
@@ -101,13 +106,13 @@ function Reversi () {
                 setPlayer1Active(false);
                 setPlayer2Active(true);  
             }
-                //console.log(player1Props.active, player2Props.active)
         }
+        //console.log(counter)
         setActivePlayer();
         },)
-
-  function setToken() {
-      if (player1Active === true) {
+        
+  const setToken = () => {
+      if (player1Active === true && player2Active === false) {
           currentToken = player1Token;
           opponentToken = player2Token;
       } else {
@@ -117,7 +122,7 @@ function Reversi () {
       //console.log(currentToken, opponentToken)
   }
 
-  function setverticalBoundary(key) {
+  const setverticalBoundary = (key) => {
         
     let verticalkeybegin = 0;
     let verticalkeyend = 7;
@@ -136,34 +141,36 @@ function Reversi () {
         firstverticalnumber = firstverticalnumber + 1;
         secondverticalnumber = secondverticalnumber - 1;
         }
+        //console.log(verticalBoundary)
     }
-    //console.log(verticalBoundary)
 
-    function sethorizontalBoundary(key) {
+  const sethorizontalBoundary = (key) => {
         
-        let horizontalkey = 0;
-        let counter = 0;
-        let firsthorizontalnumber = 0;
-        let secondhorizontalnumber = 7;
-       
-        for (let i = 0; i < 8; i++) {
-        horizontalkey = counter;    
-            for (let j = 0; j < 8; j++) {
-    
-                if (key === horizontalkey) {
-                    horizontalBoundary[0] = firsthorizontalnumber;
-                    horizontalBoundary[1] = secondhorizontalnumber
-                }
-            //console.log(verticalkeybegin, verticalkeyend, firstverticalnumber, secondverticalnumber)
-                horizontalkey = horizontalkey + 8;
-            }
-        firsthorizontalnumber++; 
-        secondhorizontalnumber--;    
-        counter++;    
-        }
-    }
+    let horizontalkey = 0;
+    let counter = 0;
+    let firsthorizontalnumber = 0;
+    let secondhorizontalnumber = 7;
+   
+    for (let i = 0; i < 8; i++) {
+    horizontalkey = counter;    
+        for (let j = 0; j < 8; j++) {
 
-    function setUpperDiagonal(key) {
+            if (key === horizontalkey) {
+                horizontalBoundary[0] = firsthorizontalnumber;
+                horizontalBoundary[1] = secondhorizontalnumber
+            }
+        
+            horizontalkey = horizontalkey + 8;
+        }
+    firsthorizontalnumber++; 
+    secondhorizontalnumber--;    
+    counter++;    
+    }
+    //console.log(horizontalBoundary);
+}
+
+
+    const setUpperDiagonal = (key) => {
         let diagonalcounter = 0;
         let diagonalmax = 8;
         let diagonaldiversion = 0;
@@ -185,7 +192,7 @@ function Reversi () {
         //console.log(diagonalBoundary)       
     }
     
-    function setLowerDiagonal(key) {
+    const setLowerDiagonal = (key) => {
         let diagonalcounter = 63;
         let diagonalmax = 8;
         let diagonaldiversion = 63;
@@ -208,7 +215,8 @@ function Reversi () {
         //console.log(diagonalBoundary)
     }
 
-    function setLeftDiagonal(key) {
+
+    const setLeftDiagonal = (key) => {
         let diagonalcounter = 8;
         let diagonalmax = 8;
         let diagonaldiversion = 8;
@@ -231,7 +239,7 @@ function Reversi () {
         //console.log(diagonalBoundary)
     }
 
-    function setRightDiagonal(key) {
+    const setRightDiagonal = (key) => {
         let diagonalcounter = 15;
         let diagonalmax = 8;
         let diagonaldiversion = 15;
@@ -254,7 +262,7 @@ function Reversi () {
             //console.log(diagonalBoundary)
         }
     
-    function firstField(key, changedsquares, surroundingFields) {
+    const firstField = (key, changedsquares, surroundingFields) => {
         
         for (let i = 0; i < surroundingFields.length; i++) {
             
@@ -285,7 +293,7 @@ function Reversi () {
         //console.log(moveProperties)
     }
     
-    function maxSquaresToFlip(direction) {
+    const maxSquaresToFlip = (direction) => {
             
         if (direction === -8) {
             maxsquarestoflip = verticalBoundary[0];
@@ -312,7 +320,7 @@ function Reversi () {
         //console.log(maxsquarestoflip)
     } 
     
-    function nextField(key, changedSquares) {
+    const nextField = (key, changedSquares) => {
 
         for (let i = 0; i < directioncounter; i++) {
             direction = moveProperties[i].direction;
@@ -341,7 +349,7 @@ function Reversi () {
             }
         }
        
-    function lastField(key, changedSquares) {
+    const lastField = (key, changedSquares) => {
 
         for (let i = 0; i < directioncounter; i++) {
             direction = moveProperties[i].direction;
@@ -355,7 +363,7 @@ function Reversi () {
         }
     }
         
-    function flipSquares(key, changedSquares) {
+    const flipSquares = (key, changedSquares) => {
         
         let flipsquare = 0;
         let counter = 0;
@@ -379,7 +387,7 @@ function Reversi () {
     }
 
     useEffect(() => {
-        function countStones() {
+        const countStones = () => {
             let lightcount = 0;
             let darkcount = 0;
             for (let i = 0; i < board.length; i++) {
@@ -396,7 +404,7 @@ function Reversi () {
     countStones()
     },)
 
-    const [{ changedSquares }, dispatch] = useReducer((state, action) => {
+    let [{ changedSquares }, dispatch] = useReducer((state, action) => {
         if (action.type === 'changedSquares') {
           state.changedSquares.push(action.changedSquares)
           return state
@@ -459,7 +467,7 @@ function Reversi () {
 
     //console.log(player2Name)
 
-    function socketEmitPlayerData() {
+    const socketEmitPlayerData = () => {
         let id = localStorage.getItem('id');
         let socketid = socket.id;
         let name = localStorage.getItem('name')      
@@ -485,7 +493,7 @@ function Reversi () {
     },[lightCount, darkCount, isWinner, winnerName, player1NameForScore, player2NameForScore])
 
     useEffect(() => {
-        function uploadDarkScores(lightCount, darkCount) {
+        const uploadDarkScores = (lightCount, darkCount) => {
                 const token = JSON.parse(localStorage.getItem('token'));    
                 const id = localStorage.getItem('id');
                 const playerToken = localStorage.getItem('playerToken');
@@ -568,14 +576,14 @@ function Reversi () {
         },[darkcounter, darkCount, lightCount, darkresult, darkerror, darkgamesplayed, darkgameswon, darkstoneswon, player1NameForTurn])
 
         useEffect(() => {
-            function uploadLightScores(lightCount, darkCount) {
+            const uploadLightScores = (lightCount, darkCount) => {
                     const token = JSON.parse(localStorage.getItem('token'));    
                     const id = localStorage.getItem('id');
                     const playerToken = localStorage.getItem('playerToken');
     
                     //console.log(counter)
                     if (playerToken === 'light' && lightcounter === 0) {
-    
+  
                         if (lightCount + darkCount === 5) {
     
                             //request to get scores from database for Reversi page
@@ -595,13 +603,13 @@ function Reversi () {
                                     let error = err.response;
                                     if (error) {
                                         setLightError(error.status);
-                                        //console.log(error.status);
+                                        console.log(error.status);
                                     }
                                 });
                         }
     
                         if (lightresult === 200 && lightCount + darkCount === 64) {                
-   
+                            //console.log('test')
                             let updatelightgamesplayed = lightgamesplayed + 1;
     
                             let updatelightstoneswon = lightstoneswon + lightCount;
@@ -658,13 +666,10 @@ function Reversi () {
                 let changedSquares = [...board];
 
                 //console.log("Key: " + key)
-                //console.log(changedSquares);          
-
-                //setActivePlayer();
+                //console.log(changedSquares);
 
                 setToken();
-
-                //console.log(player1Props, player2Props, currentToken, opponentToken)
+                //console.log(currentToken, opponentToken);
 
                 setverticalBoundary(key);
                 sethorizontalBoundary(key);
@@ -697,26 +702,26 @@ function Reversi () {
     }
 
     return (
-        <div className="reversi-container">
-          <div className="player1-container">
-            <div className="firstname-container">
-                <h4 className="header"> Name player 1: </h4>
-                <p className="text"> {player1Present ? player1NameForScore : "No player"} </p>
-                <h4 className="header"> Score: </h4>
-                <p className="text"> {darkCount} </p>
-            </div>
-            <div className="avatar1-container">
-                {avatar1Result ? <img className="image" src={`data:image/jpeg;base64,${image1}`} alt='' /> : <img className="image" src={avatar} alt='' /> }
-            </div>
-          </div>
-          <div className="board-container">
-           <div className="board">
-            <div className="name-turn-text">
-              <p className="name-turn-text">
-                {player1Active ? player1NameForTurn : player2NameForTurn}
-              </p>
-            </div>
-            <div className="board-row">
+        <Box>
+          <Box style={{flexFlow: 'column', marginRight: 100}}>
+            <BoxColumn style={{height: 100, width: 150, backgroundColor: 'red', borderRadius: 10}}>
+                <Text style={{marginBottom: 3, fontWeight: 'bolder'}}> Name player 1: </Text>
+                <Text style={{marginBottom: 5}}> {player1Present ? player1NameForScore : "No player"} </Text>
+                <Text style={{marginBottom: 3, fontWeight: 'bolder'}}> Score: </Text>
+                <Text> {darkCount} </Text>
+            </BoxColumn>
+            <BoxColumn style={{height: 150, width: 150, marginTop: 50, backgroundColor: 'red', borderRadius: 10}}>
+                {avatar1Result ? <Image style={{marginTop: 15}} src={`data:image/jpeg;base64,${image1}`} alt='' /> : <Image style={{marginTop: 15}} src={avatar} alt='' /> }
+            </BoxColumn>
+          </Box>
+          <BoxColumn style={{height: 650, width: 650, backgroundColor: 'red', marginTop: 50, borderRadius: 10}}>
+          <Box style={{justifyContent: 'center', height: 70, width: 650, borderRadius: 10}}>
+                <Text style={{fontWeight: 'bolder', marginBottom: 10}}>
+                    {player1Active ? player1NameForTurn : player2NameForTurn}
+                </Text>
+            </Box>
+           <Board>
+            <BoardRow>
                 {renderSquare(0)}
                 {renderSquare(1)}
                 {renderSquare(2)}
@@ -780,31 +785,30 @@ function Reversi () {
                 {renderSquare(60)}
                 {renderSquare(61)}
                 {renderSquare(62)}
-                {renderSquare(63)}
-                              
-            </div>
-          </div>
-           <button className="reversi-button"
+                {renderSquare(63)}                            
+            </BoardRow>
+          </Board>
+           <Button style={{marginTop: 10}}
                     onClick={socketEmitPlayerData}
            >
             Click here to start the game!
-            </button>
-            <p className="call-winner">
+            </Button>
+            <Text style={{color: 'yellow', marginTop: 10}}>
                 {isWinner ? winnerName + " wins! Press F5 for another game." : ""}
-            </p>
-        </div>
-          <div className="player2-container">
-            <div className="secondname-container">
-                <h4 className="header"> Name player 2: </h4>
-                <p className="text"> {player2Present ? player2NameForScore : "No player"} </p>
-                <h4 className="header"> Score: </h4>
-                <p className="text"> {lightCount} </p>
-            </div>
-            <div className="avatar2-container">
-                {avatar2Result ? <img className="image" src={`data:image/jpeg;base64,${image2}`} alt='' /> : <img className="image" src={avatar} alt='' /> }
-            </div>
-          </div>
-      </div>
+            </Text>
+        </BoxColumn>
+          <Box style={{flexFlow: 'column', marginLeft: 100}}>
+            <BoxColumn style={{height: 100, width: 150, backgroundColor: 'red', borderRadius: 10}}>
+                <Text style={{marginBottom: 3, fontWeight: 'bolder'}}> Name player 2: </Text>
+                <Text style={{marginBottom: 5}}> {player2Present ? player2NameForScore : "No player"} </Text>
+                <Text style={{marginBottom: 3, fontWeight: 'bolder'}}> Score: </Text>
+                <Text> {lightCount} </Text>
+            </BoxColumn>
+            <BoxColumn style={{marginTop: 50, backgroundColor: 'red', borderRadius: 10, height: 150, width: 150}}>
+                {avatar2Result ? <Image style={{marginTop: 15}} src={`data:image/jpeg;base64,${image2}`} alt='' /> : <Image style={{marginTop: 15}} className="image" src={avatar} alt='' /> }
+            </BoxColumn>
+          </Box>
+      </Box>
         );
     }
 

@@ -1,42 +1,27 @@
-import React, { useState, useEffect }  from 'react';
-import ReactDOM from 'react-dom';
+import React, { useState }  from 'react';
 import Navigation from '../components/navigation/Navigation';
 import Score from '../components/scores/Score';
-import { getImage } from '../components/requests/get';
-import './Style.css';
+import { getScoreForAuth } from '../components/requests/get';
 import NotLoggedIn from '../components/notloggedin/NotLoggedIn';
+import { Page } from './style/style';
 
-function ScoresPage() {
+export const ScoresPage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [result, setResult] = useState();
-  const [error, setError] = useState();
+  //const [error, setError] = useState();
 
-  useEffect (() => {
-    getImage(setResult, setError);
-    if (result === 200) {
-      setIsLoggedIn(true);
-    }
-    if (error === 500) {
-      setIsLoggedIn(true);
-    }
-},[result, error])
+  getScoreForAuth(setIsLoggedIn);
 
   if (isLoggedIn === true) {
     return (
-    <div className='page-container-no-background'>
-      <Navigation />
-      <Score />
-    </div>  
-  );
-    } else {
-    return (
-      <div className='page-container-not-logged-in'>
-        <NotLoggedIn />
-      </div>
+        <Page>
+          <Navigation />
+          <Score />
+        </Page>
     );
-  }
+  } else {
+    return (
+        <Page>
+          <NotLoggedIn />
+        </Page>
+  );}
 }
-
-ReactDOM.render(<ScoresPage />, document.getElementById('root'))
-
-export default ScoresPage;

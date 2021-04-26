@@ -1,20 +1,13 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import Title from '../components/titles/Title';
 import Login from '../components/login/Login';
-import './Style.css';
+import { Page } from './style/style.js';
 
-class LoginPage extends React.Component {
-  render() {
+export const LoginPage = () => {
       return (
-        <div className="page-container-no-background">
+        <Page>
           <Title />
           <Login />        
-        </div>
+        </Page>
       );
-  } 
-}
-
-ReactDOM.render(<LoginPage />, document.getElementById('root'))
-
-export default LoginPage;
+    } 

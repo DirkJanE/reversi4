@@ -1,20 +1,14 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import Title from '../components/titles/Title';
-import Signup from '../components/signup/Signup';
-import '../pages/Style.css';
+import { Signup } from '../components/signup/Signup';
+import { Page } from './style/style.js';
 
-class SignupPage extends React.Component {
-  render() {
-      return (
-        <div className="page-container-no-background">
+export const SignupPage = () => {
+  return (
+        <Page>
           <Title />
           <Signup />        
-        </div>
+        </Page>
       );
-  } 
-}
+  }
 
-ReactDOM.render(<SignupPage />, document.getElementById('root'))
-
-export default SignupPage;

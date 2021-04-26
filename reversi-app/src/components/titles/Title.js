@@ -1,19 +1,12 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import './Title.css';
+import { Title } from './style/style.js';
 
-class Title extends React.Component {
-  render() {
+const ReversiTitle = () => {
       return (
-        <div>
-          <h1 className="title">
+          <Title>
             Reversi
-          </h1>
-        </div>
+          </Title>
       );
-    } 
-}
+  }
 
-ReactDOM.render(<Title />, document.getElementById('root'))
-
-export default Title;
+export default ReversiTitle;

@@ -1,21 +1,18 @@
 import React from "react";
-import "./Square";
+import { OneSquare, Stone } from './style/style.js';
 import dark from "./images/token-dark.gif";
 import light from "./images/token-light.gif";
 import green from "./images/token-green.gif";
-import './Reversi.css';
 
 //defines each single square.
-function Square({value, onClick}) {
-
+const Square = ({value, onClick}) => {
+  //console.log(value)
   return (
-    <button className="square"
-            onClick={onClick}
-    >  
-      {value === 'dark' ? <img className="stone" src={ dark } alt='' /> : null}
-      {value === 'light' ? <img className="stone" src= { light } alt='' /> : null}
-      {value === 'green' ? <img className="stone" src= { green } alt='' /> : null}
-    </button>
+    <OneSquare onClick= {onClick}>  
+      {value === 'dark' ? <Stone src={ dark } alt='' /> : null}
+      {value === 'light' ? <Stone src= { light } alt='' /> : null}
+      {value === 'green' ? <Stone src= { green } alt='' /> : null}
+    </OneSquare>
   );
 }
 

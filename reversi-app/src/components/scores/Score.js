@@ -1,26 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { getScore } from '../requests/get';
-import './Score.css';
+import { BoxColumn } from '../style/style';
+import { Scorebox } from './Scorebox';
 
 const Score = () => {
     //set usestate variables and setters.
     const [gamesPlayed, setGamesPlayed] = useState();
     const [gamesWon, setGamesWon] = useState();
     const [stonesWon, setStonesWon] = useState();
-    //const [result, setResult] = useState();
-    //const [error, setError] = useState();
+    const [scores, setScores] = useState();
 
-  //get scores from database and set them for display on page.
+  //get scores from database and store them in object.
   useEffect (() => {
-        getScore(setGamesPlayed, setGamesWon, setStonesWon)
+    
+    getScore(setGamesPlayed, setGamesWon, setStonesWon)
+        setScores({'gamesPlayed': gamesPlayed, 'gamesWon': gamesWon, 'stonesWon': stonesWon})
+    
     }, [gamesPlayed, gamesWon, stonesWon])
 
 return (
-    <div className="scores-container">
-        <p>Games you have played: {gamesPlayed}</p>
-        <p>Games you have won: {gamesWon} </p>
-        <p>Total number of stones you have won: {stonesWon}</p>
-    </div>
+    <BoxColumn style={{flexFlow: 'column' , alignItems: 'center', height: 300, width: 500, marginTop: 200, color: 'black', backgroundColor: 'red', borderRadius: 10}}>
+        <Scorebox {...scores}>
+        </Scorebox>
+    </BoxColumn>
     );
 }
 

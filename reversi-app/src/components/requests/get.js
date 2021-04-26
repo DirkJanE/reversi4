@@ -33,31 +33,51 @@ import { IP } from '../url/url';
         }
 
 
+            //request to get scores from database fro scorepage
+    export const getScoreForAuth = async (setIsLoggedIn) => {
+        const id = JSON.parse(localStorage.getItem('id'));
+        const token = JSON.parse(localStorage.getItem('token'));
+    
+        axios.get(`http://${IP}:8080/api/score/getscore/${id}`,
+        { headers: { "Authorization": `Bearer ${token}` }})
+            .then(response => {
+                let result = response.status;
+                //console.log(response)
+                if (result === 200) {
+                    setIsLoggedIn(true);
+                }
+            })
+            .catch(error => {
+                if (error.response) {
+                    setIsLoggedIn(false);
+                }
+            });
+        }
+/*
     //request to get image from database           
-    export const getImage = async (setResult, setError) => {
+    export const getImage = async (setIsLoggedIn) => {
         const userid = JSON.parse(localStorage.getItem('id'));
         const token = JSON.parse(localStorage.getItem('token'));
-
+        //console.log('test');
     await axios.get(`http://${IP}:8080/api/image/getimage/${userid}`,
     { headers: { "Authorization": `Bearer ${token}` }})
         .then(response => {
             let result = response.status;
-            //console.log(response)
             if (result === 200) {
-                setResult(result);
+                setIsLoggedIn(true);
                 //console.log(response.data);
             }
         })
         .catch(err => {
             let error = err.response;
-            //console.log(error.data.status);
-            if (error) {
-                setError(error.status);
-                //console.log(error)
+            let status = error.data.status;
+            //console.log(status);
+            if (status === 500) {
+                setIsLoggedIn(true);
             }
         });
     }
-
+*/
     //request to get image for Reversi page
     export const getImageForReversi = async (userid, setImage, setResult) => {
         const token = JSON.parse(localStorage.getItem('token'));

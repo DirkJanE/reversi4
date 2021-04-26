@@ -1,41 +1,27 @@
-import React, {useState, useEffect} from 'react';
-import ReactDOM from 'react-dom';
+import React, {useState} from 'react';
 import { Chat } from '../components/chat/Chat';
 import Navigation from '../components/navigation/Navigation';
-import { getImage } from '../components/requests/get';
+import { getScoreForAuth } from '../components/requests/get';
 import NotLoggedIn from '../components/notloggedin/NotLoggedIn';
-import './Style.css';
+import { Page } from './style/style.js';
 
-function ChatPage () {
+export const ChatPage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [result, setResult] = useState();
-  const [error, setError] = useState();
+  //const [error, setError] = useState();
 
-  useEffect (() => {
-    getImage(setResult, setError);
-    if (result === 200) {
-      setIsLoggedIn(true);
-    }
-    if (error === 500) {
-      setIsLoggedIn(true);
-    }
-},[result, error])
+  getScoreForAuth(setIsLoggedIn);
 
     if (isLoggedIn === true) {
       return (
-          <div className = "page-container-no-background">
+          <Page>
             <Navigation />
             <Chat />
-          </div>
+          </Page>
       );
     } else {
       return (
-        <div className='page-container-not-logged-in'>
-        <NotLoggedIn />
-      </div>
+          <Page>
+            <NotLoggedIn />
+          </Page>
     );}
   }
-
-ReactDOM.render(<ChatPage />, document.getElementById('root'))
-
-export default ChatPage;

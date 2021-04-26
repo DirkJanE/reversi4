@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import io from "socket.io-client";
 import ScrollToBottom from 'react-scroll-to-bottom';
-import './Chat.css';
+import { Box, BoxColumn, BoxRow, Button, Input } from '../style/style.js';
+import { MessageRight, MessageLeft } from './style/chatstyle.js';
+import { IP } from '../url/url';
+import './style/Chat.css';
 
 //initialize endpoint to socket.io server
-const ENDPOINT = 'http://192.168.1.218:4000';
+const ENDPOINT = `http://${IP}:4000`;
 let socket = io(ENDPOINT);
 
 export const Chat = () => {
@@ -60,9 +63,9 @@ export const Chat = () => {
     }
 
 return (
-    <div className="chat-container">
-      <div className="messageandname-box">
-        <ScrollToBottom className="message-box">
+    <BoxColumn style={{height: 320, width: 1000, marginTop: 200}}>
+      <BoxRow style={{height: 220, width: 1000, backgroundColor: 'red', borderTopLeftRadius: 10, borderTopRightRadius: 10}}>
+        <ScrollToBottom className='message-box'>
         {messages.map((message, index) => {
                 message = Object.values(message);
                 let messagename = message[0].name;
@@ -70,47 +73,44 @@ return (
                 if (messagename === name) {
                 return (
                     <div key={index}>
-                        <p className="message-left">
+                        <MessageLeft>
                         {messagename + " says: " + messagebody}
-                        </p>
+                        </MessageLeft>
                     </div>
                     )}
                     else {
                     return (
                         <div key={index}>
-                          <p className="message-right">
+                          <MessageRight>
                             {messagename + " says: " + messagebody}
-                          </p>
+                          </MessageRight>
                         </div>
                       )
                     }
                 })}
         </ScrollToBottom>
-          <div className="name-box">
+          <Box style={{alignItems: 'flex-start', height: 200, width: 180, backgroundColor: 'lightgrey', marginTop: 20, borderRadius: 10}}>
           People in chat:
           <br/>
           {peopleInChat[0]}
           <br/>
           {peopleInChat[1]}
-          </div>
-        </div>
-        <div>
-          <div className="inputandbutton-container">
-              <input className="message-input"
-                      name="input"
-                      placeholder="Say something..."
-                      value={message}
-                      onChange={handleChange}
+          </Box>
+        </BoxRow>
+        <BoxRow style={{height: 100, width: 1000, backgroundColor: 'red', borderBottomLeftRadius: 10, borderBottomRightRadius: 10}}>
+              <Input style={{height: 55, width: 755, marginLeft: 20}}
+                     name="input"
+                     placeholder="Say something..."
+                     value={message}
+                     onChange={handleChange}
               />
-              <button className="send-button"
+              <Button style={{height: 62, width: 180, marginLeft: 20, marginBottom: 3}}
                       name="button"
                       onClick={sendMessage}
-                      
                       >
                   Send
-              </button>
-          </div>
-        </div>
-      </div>
+              </Button>
+        </BoxRow>
+      </BoxColumn>
     );
 }

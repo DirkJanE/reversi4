@@ -1,12 +1,10 @@
 import React from 'react';
-import './NotLoggedIn.css';
+import { Text } from '../style/style.js';
 
 //page to show when user is not logged in
 const NotLoggedIn = () => {
     return (
-        <div className='notloggedin-text'>
-            <p className='notloggedin-text'> You are not logged in! </p>
-        </div>
+            <Text style={{marginTop: 400, color: 'white', fontSize: 30}}> You are not logged in! </Text>
     );
 }
 

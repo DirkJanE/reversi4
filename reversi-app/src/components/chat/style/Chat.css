@@ -1,0 +1,12 @@
+.message-box {
+    border-radius: 7px;
+    margin-top: 20px;
+    margin-right: 20px;
+    margin-left: 20px;
+    background-color: lightgray;
+    width: 760px;
+    height: 200px;
+    border: 10px;
+    border-color: black;
+    overflow: auto;
+}

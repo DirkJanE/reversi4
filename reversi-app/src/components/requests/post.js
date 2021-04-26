@@ -4,7 +4,7 @@ import { IP } from '../url/url';
 //request to store user data in the database
 export const signupRequest = async (email, username, password, setResult, setError) => {
     
-    axios.post(`http://${IP}:8080/api/auth/signup`, 
+    axios.post(`http://localhost:8080/api/auth/signup`, 
         { email: email,
         username: username,
         password: password,

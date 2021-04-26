@@ -1,10 +1,11 @@
+const IP = '192.168.1.218';
 const express = require('express');
 const http = require('http');
 const app = express();
 const httpServer = http.createServer(app);
 const io = require("socket.io")(httpServer, {
     cors: {
-      origin: ["http://192.168.1.218:3000", "origin-list"],
+      origin: [`http://${IP}:3000`, "origin-list"],
       methods: ["GET", "POST"],
       allowedHeaders: ["Access-Control-Allow-Origin"],
       credentials: true
