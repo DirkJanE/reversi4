@@ -9,12 +9,22 @@ toevoegen. Daarom is er ook geen Service & repo voor de user-rollen geprogrammee
 database te krijgen is via SQL statements in dit bestand.
  */
 
+
+/*
+Onderstaand moet alleen uncomment worden als spring.jpa.hibernate.ddl-auto op create staat. Of het moet op comment worden gezet
+nadat het de eerste keer met update is gestart. Als het op update staat zal spring boot bij elke keer opstarten de rollen
+en de gebruikers Mark en Eva aanmaken.
+*/
+
+/*
 INSERT INTO role(name) VALUES('ROLE_USER');
 INSERT INTO role(name) VALUES('ROLE_MODERATOR');
 INSERT INTO role(name) VALUES('ROLE_ADMIN');
+
 
 INSERT INTO app_user(username, email, password) VALUES ('Mark', 'mark@mark.nl', '$2a$10$/aM8vfWJjgvK3pkBmyFmI.THgD4ILtUkSeQ8C.edBsXCFJ0CuzC22'); --Password1!
 INSERT INTO app_user(username, email, password) VALUES ('Eva', 'eva@eva.nl', '$2a$10$/aM8vfWJjgvK3pkBmyFmI.THgD4ILtUkSeQ8C.edBsXCFJ0CuzC22'); --Password1!
 
 INSERT INTO score(gamesplayed, gameswon, stoneswon) VALUES ('0', '0', '0');
 INSERT INTO score(gamesplayed, gameswon, stoneswon) VALUES ('10', '5', '200');
+*/
